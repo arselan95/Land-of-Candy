@@ -1,0 +1,73 @@
+package q2;
+
+import java.util.HashMap;
+import java.util.Scanner;
+import java.util.Set;
+
+public class LandOfCandy {
+	static int start;
+	static HashMap<Cell, Integer> cells = new HashMap<>();
+
+	// start the game by putting max score 100
+	public static void startGame() {
+		while (cells.size() < start) {
+			cells.put(new Cell(start), 100);
+		}
+	}
+
+	// prints the cells where there is candy
+	public static void printCells() {
+		Set<Cell> temp = cells.keySet();
+		for (Cell c : temp) {
+			System.out.println("(" + c.i + "," + c.j + "," + c.k + ")");
+		}
+	}
+
+	// awards the candy and points when player wins candy
+	public static void awardCandy(Cell c) {
+		int pts = cells.get(c);
+		cells.put(c, pts + 100);
+
+	}
+
+	// test the game by taking user input
+	public static void main(String[] args) {
+		start = Integer.parseInt(args[0]);
+		startGame();
+
+		boolean done = false;
+		Scanner in = new Scanner(System.in);
+		Cell player = new Cell(-1, -1, -1);
+
+		while (done != true) {
+			System.out.println("Enter the next position (or p to print current board or q to quit): ");
+			String input = in.next();
+			if (input.equalsIgnoreCase("p")) {
+				printCells();
+			} else if (input.equalsIgnoreCase("q"))
+				return;
+			else {
+				int i = Integer.parseInt(input);
+				int j = in.nextInt();
+				int k = in.nextInt();
+				Cell temp = new Cell(i, j, k);
+				if (cells.containsKey(temp)) {
+					player.i = i;
+					player.j = j;
+					player.k = k;
+					player.points += cells.get(temp);
+					cells.remove(temp);
+					Cell addCell = new Cell(start);
+					if (cells.containsKey(addCell)) {
+						awardCandy(addCell);
+					} else
+						cells.put(addCell, 100);
+					System.out.println("Candy awarded! Total points: " + player.points);
+				} else {
+					System.out.println("No Candy here");
+				}
+			}
+		}
+	}
+
+}
